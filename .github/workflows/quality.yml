@@ -8,6 +8,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+  schedule:
+    - cron: '20 6 * * 1'
 
 permissions:
   contents: read
@@ -37,8 +39,14 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
+      - name: Audit locked PHP dependencies
+        run: composer audit --locked --abandoned=fail --no-interaction
+
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Verify PHP and extension requirements
+        run: composer check-platform-reqs
 
       - name: Check code style
         run: php vendor/bin/pint --test
