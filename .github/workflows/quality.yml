@@ -52,4 +52,6 @@ jobs:
         run: php vendor/bin/pint --test
 
       - name: Run test suite
-        run: php artisan test
+        run: |
+          cp .env.example .env
+          php artisan test
